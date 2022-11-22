@@ -2,11 +2,15 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class StartCoundown : MonoBehaviour
 {
     public Text countDownDisplay;
     public AudioSource countDownSound;
     public AudioSource goSound;
+
+    public GameObject playerCar;
+    public GameObject[] aICars;
 
     void Start()
     {
@@ -31,6 +35,12 @@ public class StartCoundown : MonoBehaviour
         countDownDisplay.enabled = false;
         LapTimeCounter.isCountingTime = true;
         TotalTimeCounter.isCountingTime = true;
+
+        playerCar.GetComponent<RCC_CarControllerV3>().canControl = true;
+        for (int i = 0; i < aICars.Length; i++)
+        {
+            aICars[i].GetComponent<RCC_CarControllerV3>().canControl = true;
+        }
 
     }
 }
