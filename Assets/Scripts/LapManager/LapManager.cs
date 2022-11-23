@@ -9,6 +9,8 @@ public class LapManager : MonoBehaviour
     public static int currentCheckpoint;
     public int lap;
     public int checkpoint;
+    public int currentPosition;
+    
 
     public Text lapDisplay;
     
@@ -36,6 +38,6 @@ public class LapManager : MonoBehaviour
 
     void DisplayPosition()
     {
-        positionDisplay.text =PositionTracker.playerPosition.ToString() + "/" + "2";
+        positionDisplay.text = currentPosition.ToString() + "/" + PositionTracker.maxPosition.ToString();
     }
 }

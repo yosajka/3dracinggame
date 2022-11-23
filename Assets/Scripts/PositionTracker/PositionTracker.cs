@@ -6,19 +6,40 @@ public class PositionTracker : MonoBehaviour
     public GameObject[] CarAIs;
     public GameObject[] Checkpoints;
 
-    public static int playerPosition;
-    public int position;
+    public bool[] isAheadOf;
+
+    public static int maxPosition;
     
     void Start()
     {
-        playerPosition = CarAIs.Length + 1;
+        maxPosition = CarAIs.Length + 1;
+        
     }
 
     
     void Update()
     {
-        position = playerPosition;
 
+        CalculatePosition();
+
+        playerCar.GetComponent<LapManager>().currentPosition = DeterminePosition(isAheadOf);
+    }
+
+    private int DeterminePosition(bool[] isAheadOf)
+    {
+        int position = maxPosition;
+        for (int i = 0; i < isAheadOf.Length; i++)
+        {
+            if (isAheadOf[i])
+            {
+                position -= 1;
+            }
+        }
+
+        return position;
+    }
+    private void CalculatePosition()
+    {
         int playerCurrentLap = LapManager.currentLap;
         int playerCurrentCheckpoint = LapManager.currentCheckpoint;
         float playerNextCheckpointDistance;
@@ -43,11 +64,11 @@ public class PositionTracker : MonoBehaviour
 
             if (playerCurrentLap > aiCurrentLap)
             {
-                playerPosition -= 1;
+                isAheadOf[i] = true;
             }
             else if (playerCurrentLap < aiCurrentLap)
             {
-                playerPosition += 1;
+               isAheadOf[i] = false;
             }
             else
             {
@@ -55,11 +76,11 @@ public class PositionTracker : MonoBehaviour
 
                 if (playerCurrentCheckpoint > aiCurrentCheckpoint)
                 {
-                    playerPosition -= 1;
+                    isAheadOf[i] = true;
                 }
                 else if (playerCurrentCheckpoint < aiCurrentCheckpoint)
                 {
-                    playerPosition += 1;
+                    isAheadOf[i] = false;
                 }
                 else
                 {
@@ -81,19 +102,14 @@ public class PositionTracker : MonoBehaviour
 
                     if (playerNextCheckpointDistance <= aiNextCheckpointDistance)
                     {
-                        playerPosition -= 1;
+                        isAheadOf[i] = true;
                     }
                     else
                     {
-                        playerPosition += 1;
+                        isAheadOf[i] = false;
                     }
-
-                    
                 }
             }
-
-            playerPosition = Mathf.Max(1, playerPosition);
-            playerPosition = Mathf.Min(CarAIs.Length + 1, playerPosition);
         }
     }
 
